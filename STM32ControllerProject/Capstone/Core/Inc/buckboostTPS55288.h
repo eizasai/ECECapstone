@@ -12,14 +12,45 @@
 #include "i2c.h"
 
 // Register Addresses
-#define REF0 		0x0 // Reference Voltages
-#define REF1 		0x1
-#define IOUT_LIMIT 	0x2	// Current Limit Setting
-#define VOUT_SR 	0x3	// Slew Rate
-#define VOUT_FS		0x4	// Feedback Selection
-#define CDC			0x5	// Cable Compensation
-#define MODE 		0x6	// Mode Control
-#define STATUS		0x7	// Operating Status
+#define REF0 				0x0 // Uses bits 7-0
+
+#define REF1 				0x1 // Uses bits 9-8
+#define REF1_VREF			0
+
+#define IOUT_LIMIT 			0x2	// Current Limit Setting
+#define IOUT_LIMIT_ENABLE	7
+#define IOUT_LIMIT_SETTING	0
+
+#define VOUT_SR 			0x3	// Slew Rate
+#define VOUT_SR_OCP_DELAY 	4
+#define VOUT_SR_SR			0
+
+#define VOUT_FS				0x4	// Feedback Selection
+#define VOUT_FS_FB			7
+#define VOUT_FS_INTFB		0
+
+#define CDC					0x5	// Cable Compensation
+#define CDC_SC_MASK			7
+#define CDC_OCP_MASK 		6
+#define CDC_OVP_MASK		5
+#define CDC_CDC_OPTION 		3
+#define CDC_CDC				0
+
+#define MODE 				0x6	// Mode Control
+#define MODE_OE				7 // Output Enable
+#define MODE_FSWDBL 		6
+#define MODE_HICCUP 		5
+#define MODE_DISCHG 		4
+#define MODE_VCC			3
+#define MODE_I2CADD 		2 // Set slave addresses
+#define	MODE_PFM			1
+#define MODE_MODE 			0
+
+#define STATUS				0x7	// Operating Status
+#define STATUS_SCP 			7
+#define STATUS_OCP 			6
+#define STATUS_OVP			5
+#define STATUS_STATUS		0 // 00 boost, 01 buck, 10 buck-boost
 
 /**
  * @brief Determines the bust to use depending on the arbitrary converter index
