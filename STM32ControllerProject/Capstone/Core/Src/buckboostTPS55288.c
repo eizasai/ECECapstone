@@ -12,7 +12,7 @@ extern I2C_HandleTypeDef hi2c3;
 
 const uint8_t Addresses[2] = {0x74, 0x75};
 
-I2C_HandleTypeDef Determine_I2C_Bus_TPS55288(uint8_t converter_index)
+I2C_HandleTypeDef *Determine_I2C_Bus_TPS55288(uint8_t converter_index)
 {
 	uint8_t converter_set = converter_index / 2;
 	I2C_HandleTypeDef *I2C_Line_Address;
@@ -43,7 +43,7 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index)
 	}
 }
 
-HAL_StatusTypeDef WriteByteTPS55288(Converter_Index, uint8_t Register_Address, uint8_t WriteData)
+HAL_StatusTypeDef WriteByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, uint8_t WriteData)
 {
 	uint8_t address_type = Converter_Index % 2;
 	I2C_HandleTypeDef *I2C_Line_Address = Determine_I2C_Bus_TPS55288(Converter_Index);
@@ -58,4 +58,5 @@ HAL_StatusTypeDef WriteByteTPS55288(Converter_Index, uint8_t Register_Address, u
 //		Error_Handler();
 	}
 	while (HAL_I2C_IsDeviceReady(I2C_Line_Address, Device_Address, 1, HAL_MAX_DELAY));
+	return HAL_Status;
 }

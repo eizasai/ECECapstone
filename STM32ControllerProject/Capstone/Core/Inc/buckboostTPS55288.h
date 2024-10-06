@@ -26,7 +26,7 @@
  * @retval I2C Line address.
  * @param Converter_Index: The arbitrary index of the converter in the system
  */
-I2C_HandleTypeDef Determine_I2C_Bus_TPS55288(uint8_t Converter_Index);
+I2C_HandleTypeDef *Determine_I2C_Bus_TPS55288(uint8_t Converter_Index);
 
 /**
  * @brief Configure the slave addresses of the converters

@@ -60,8 +60,8 @@ all: main-build
 main-build: Capstone.elf secondary-outputs
 
 # Tool invocations
-Capstone.elf Capstone.map: $(OBJS) $(USER_OBJS) C:\Users\eizak\STM32CubeIDE\workspace_1.16.1\Capstone\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Capstone.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\eizak\STM32CubeIDE\workspace_1.16.1\Capstone\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Capstone.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Capstone.elf Capstone.map: $(OBJS) $(USER_OBJS) C:\Users\eizak\Desktop\CAPSTONE\MPPTCapstone\STM32ControllerProject\Capstone\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Capstone.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\eizak\Desktop\CAPSTONE\MPPTCapstone\STM32ControllerProject\Capstone\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Capstone.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
