@@ -69,9 +69,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint8_t OutputBuffer[BUFFERLENGTH];
-	uint8_t ReceiveCharacter;
-	uint16_t i = 0;
+//	uint8_t OutputBuffer[BUFFERLENGTH];
+//	uint8_t ReceiveCharacter;
+//	uint16_t i = 0;
+	uint8_t Single_Converter_Index = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,9 +99,7 @@ int main(void)
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
   if (DEBUG_CONFIGURATION_MODE) { // Configures each of the buck converter device addresses to prevent conflicts
-	  for (int i = 0; i < NUMBER_OF_CONVERTERS; i++) {
-		  Configure_Slave_AddressTPS55288(i);
-	  }
+	  Configure_Slave_AddressTPS55288(Single_Converter_Index);
   }
   /* USER CODE END 2 */
 

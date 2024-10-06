@@ -34,12 +34,24 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index)
 {
 	uint8_t address_type = Converter_Index % 2; // 0 sets device address to 0x74, 1 to 0x75
 	HAL_StatusTypeDef HAL_Status = HAL_ERROR;
-	HAL_Status = WriteByteTPS55288(Converter_Index, MODE, address_type);
-	if (HAL_Status != HAL_OK) {
-		HAL_Status = WriteByteTPS55288(Converter_Index + (Converter_Index % 2 ? -1 : 1), MODE, address_type);
-	if (HAL_Status != HAL_OK) {
-		Error_Handler();
+	uint8_t ReadValue = 0;
+	uint8_t WriteValue = 0;
+	uint8_t mask = MASKSTART ^ (1 << MODE_I2CADD);
+	WriteValue = (ReadValue & mask) + (address_type << MODE_I2CADD);
+	ReadValue = ReadByteTPS55288(Converter_Index, MODE, &HAL_Status);
+	if (HAL_Status == HAL_OK) {
+		HAL_Status = WriteByteTPS55288(Converter_Index, MODE, WriteValue);
 	}
+	else {
+		Converter_Index = Converter_Index + (Converter_Index % 2 ? -1 : 1);
+		ReadValue = ReadByteTPS55288(Converter_Index, MODE, &HAL_Status);
+		if (HAL_Status != HAL_OK) {
+					Error_Handler();
+		}
+		HAL_Status = WriteByteTPS55288(Converter_Index, MODE, WriteValue);
+		if (HAL_Status != HAL_OK) {
+			Error_Handler();
+		}
 	}
 }
 
@@ -59,4 +71,17 @@ HAL_StatusTypeDef WriteByteTPS55288(uint8_t Converter_Index, uint8_t Register_Ad
 	}
 	while (HAL_I2C_IsDeviceReady(I2C_Line_Address, Device_Address, 1, HAL_MAX_DELAY));
 	return HAL_Status;
+}
+
+uint8_t ReadByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling)
+{
+	uint8_t ReturnValue = 0;
+	uint8_t address_type = Converter_Index % 2;
+	I2C_HandleTypeDef *I2C_Line_Address = Determine_I2C_Bus_TPS55288(Converter_Index);
+	uint8_t Device_Address = Addresses[address_type];
+	uint8_t BytesToSend[1];
+	BytesToSend[0] = Register_Address;
+	*Error_Handling = HAL_I2C_Master_Transmit(I2C_Line_Address, Device_Address, BytesToSend, 1, HAL_MAX_DELAY);
+	*Error_Handling = HAL_I2C_Master_Receive(I2C_Line_Address, Device_Address, &ReturnValue, 1, HAL_MAX_DELAY);
+	return ReturnValue;
 }

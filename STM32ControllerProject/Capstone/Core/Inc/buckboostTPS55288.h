@@ -11,6 +11,7 @@
 #include "main.h"
 #include "i2c.h"
 
+#define MASKSTART 			0xff
 // Register Addresses
 #define REF0 				0x0 // Uses bits 7-0
 
@@ -74,5 +75,7 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index);
  * @param WriteData: Data to be written to the register
  */
 HAL_StatusTypeDef WriteByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, uint8_t WriteData);
+
+uint8_t ReadByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling);
 
 #endif /* INC_BUCKBOOSTTPS55288_H_ */
