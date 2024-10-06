@@ -35,6 +35,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define BUFFERLENGTH 64
+#define DEBUG_CONFIGURATION_MODE 1
+#define NUMBER_OF_CONVERTERS 3
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -95,23 +97,27 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-
+  if (DEBUG_CONFIGURATION_MODE) { // Configures each of the buck converter device addresses to prevent conflicts
+	  for (int i = 0; i < NUMBER_OF_CONVERTERS; i++) {
+		  Configure_Slave_AddressTPS55288(i);
+	  }
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  sprintf((char *) OutputBuffer, "Hello %d\n", i++);
-	  PrintOutputBuffer(OutputBuffer);
-
-	  sprintf((char *) OutputBuffer, "Press any key to continue...\r\n");
-	  PrintOutputBuffer(OutputBuffer);
-
-	  ReceiveCharacter = GetUserInput();
-
-	  sprintf((char *) OutputBuffer, "You entered: %c\r\n", ReceiveCharacter);
-	  PrintOutputBuffer(OutputBuffer);
+//	  sprintf((char *) OutputBuffer, "Hello %d\n", i++);
+//	  PrintOutputBuffer(OutputBuffer);
+//
+//	  sprintf((char *) OutputBuffer, "Press any key to continue...\r\n");
+//	  PrintOutputBuffer(OutputBuffer);
+//
+//	  ReceiveCharacter = GetUserInput();
+//
+//	  sprintf((char *) OutputBuffer, "You entered: %c\r\n", ReceiveCharacter);
+//	  PrintOutputBuffer(OutputBuffer);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
