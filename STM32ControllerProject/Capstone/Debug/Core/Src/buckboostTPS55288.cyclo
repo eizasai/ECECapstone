@@ -1,4 +1,6 @@
 ../Core/Src/buckboostTPS55288.c:15:20:Determine_I2C_Bus_TPS55288	5
 ../Core/Src/buckboostTPS55288.c:33:6:Configure_Slave_AddressTPS55288	5
-../Core/Src/buckboostTPS55288.c:58:19:WriteByteTPS55288	3
-../Core/Src/buckboostTPS55288.c:76:9:ReadByteTPS55288	1
+../Core/Src/buckboostTPS55288.c:58:6:Enable_Output_TPS55288	3
+../Core/Src/buckboostTPS55288.c:74:6:Update_Reference_Voltage_TPS55288	7
+../Core/Src/buckboostTPS55288.c:108:19:WriteByteTPS55288	3
+../Core/Src/buckboostTPS55288.c:126:9:ReadByteTPS55288	1

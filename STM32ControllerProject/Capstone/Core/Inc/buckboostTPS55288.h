@@ -12,6 +12,7 @@
 #include "i2c.h"
 
 #define MASKSTART 			0xff
+#define REF1MASK			0x03
 // Register Addresses
 #define REF0 				0x0 // Uses bits 7-0
 
@@ -68,6 +69,21 @@ I2C_HandleTypeDef *Determine_I2C_Bus_TPS55288(uint8_t Converter_Index);
 void Configure_Slave_AddressTPS55288(uint8_t Converter_Index);
 
 /**
+ * @brief Enables chip output
+ * @retval None.
+ * @param Converter_Index: The arbitrary index of the converter in the system
+ */
+void Enable_Output_TPS55288(uint8_t Converter_Index);
+
+/**
+ * @brief Update Reference Voltage to change output
+ * @retval None.
+ * @param Converter_Index: The arbitrary index of the converter in the system
+ * @param Increase_Boolean: boolean to dictate whether the voltage is increased or decreased
+ */
+void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase_Boolean);
+
+/**
  * @brief Write a byte of data to the specified device address on the specified I2C line
  * @retval The HAL Status type.
  * @param Converter_Index: The arbitrary index of the converter in the system
@@ -76,6 +92,13 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index);
  */
 HAL_StatusTypeDef WriteByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, uint8_t WriteData);
 
+/**
+ * @brief Read a byte of data from the specified device address on the specified I2C line
+ * @retval The Byte Stored at the Register Address.
+ * @param Converter_Index: The arbitrary index of the converter in the system
+ * @param Register_Address: The register address to read from
+ * @param Error_Handling: A variable to store and check the HAL status after reading the byte
+ */
 uint8_t ReadByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling);
 
 #endif /* INC_BUCKBOOSTTPS55288_H_ */

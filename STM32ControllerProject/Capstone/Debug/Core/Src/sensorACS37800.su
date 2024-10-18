@@ -1,0 +1,8 @@
+../Core/Src/sensorACS37800.c:15:20:Determine_I2C_Bus_ACS37800	24	static
+../Core/Src/sensorACS37800.c:33:6:Configure_Slave_AddressACS37800	24	static
+../Core/Src/sensorACS37800.c:58:6:Disable_Peripheral_Addressing_CircuitACS37800	24	static
+../Core/Src/sensorACS37800.c:73:10:Calculate_Voltage_RMSACS37800	24	static
+../Core/Src/sensorACS37800.c:79:10:Calculate_Current_RMSACS378000	24	static
+../Core/Src/sensorACS37800.c:85:6:Read_Sensor_ValuesACS37800	40	static
+../Core/Src/sensorACS37800.c:98:19:WriteByteACS37800	48	static
+../Core/Src/sensorACS37800.c:120:9:ReadByteACS37800	56	static

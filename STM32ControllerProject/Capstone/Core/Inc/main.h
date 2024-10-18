@@ -32,6 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "buckboostTPS55288.h"
+#include "sensorACS37800.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
