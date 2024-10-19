@@ -80,6 +80,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    /* USART2 interrupt Init */
+    HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USART2_IRQn);
   /* USER CODE BEGIN USART2_MspInit 1 */
 
   /* USER CODE END USART2_MspInit 1 */
@@ -103,6 +106,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
 
+    /* USART2 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(USART2_IRQn);
   /* USER CODE BEGIN USART2_MspDeInit 1 */
 
   /* USER CODE END USART2_MspDeInit 1 */
@@ -110,6 +115,15 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void PrintOutputData(uint8_t *OutputBuffer)
+{
+	HAL_StatusTypeDef HALStatus;
+	HALStatus = HAL_UART_Transmit(&huart2, OutputBuffer, 3, HAL_MAX_DELAY);
+	if (HALStatus != HAL_OK) {
+		Error_Handler();
+	}
+}
+
 void PrintOutputBuffer(uint8_t *OutputBuffer)
 {
 	uint32_t StringLength;
@@ -123,19 +137,5 @@ void PrintOutputBuffer(uint8_t *OutputBuffer)
 		Error_Handler();
 	}
 
-}
-
-uint8_t GetUserInput(void)
-{
-	uint8_t ReturnValue;
-	HAL_StatusTypeDef HALStatus;
-
-	HALStatus = HAL_UART_Receive(&huart2, &ReturnValue, 1, HAL_MAX_DELAY);
-
-	if (HALStatus != HAL_OK) {
-		Error_Handler();
-	}
-
-	return ReturnValue;
 }
 /* USER CODE END 1 */

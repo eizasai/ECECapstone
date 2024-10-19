@@ -42,8 +42,8 @@ extern UART_HandleTypeDef huart2;
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void PrintOutputData(uint8_t *OutputBuffer);
 void PrintOutputBuffer(uint8_t *OutputBuffer);
-uint8_t GetUserInput(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

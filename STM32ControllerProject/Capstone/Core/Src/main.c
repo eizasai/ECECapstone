@@ -34,9 +34,13 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define BUFFERLENGTH 64
-#define DEBUG_CONFIGURATION_MODE 1
-#define NUMBER_OF_CONVERTERS 3
+#define BUFFERLENGTH 				64
+#define DATALENGTH					12
+#define DEBUG_CONFIGURATION_MODE 	1
+#define NUMBER_OF_CONVERTERS 		3
+#define PERTURB_AND_OBSERVE 		1
+#define HILL_CLIMBING 				2
+#define SMART_ALGORITHM 			3
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,7 +62,11 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t ReceiveCharacter;
+uint8_t OutputBuffer[BUFFERLENGTH];
+uint8_t test_variable = 0;
+HAL_StatusTypeDef HAL_Status;
+uint8_t Current_Mode = PERTURB_AND_OBSERVE;
 /* USER CODE END 0 */
 
 /**
@@ -69,10 +77,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-//	uint8_t OutputBuffer[BUFFERLENGTH];
-//	uint8_t ReceiveCharacter;
-//	uint16_t i = 0;
-	uint8_t Single_Converter_Index = 0;
+//	uint8_t Single_Converter_Index = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,25 +103,25 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-  if (DEBUG_CONFIGURATION_MODE) { // Configures each of the buck converter device addresses to prevent conflicts
-	  Configure_Slave_AddressTPS55288(Single_Converter_Index);
-  }
+//  if (DEBUG_CONFIGURATION_MODE) { // Configures each of the buck converter device addresses to prevent conflicts
+//	  Configure_Slave_AddressTPS55288(Single_Converter_Index);
+//  }
+  sprintf((char *)OutputBuffer, "Communication Started\r\n");
+  PrintOutputBuffer(OutputBuffer);
+  sprintf((char *)OutputBuffer, "Receiving Character\r\n");
+  PrintOutputBuffer(OutputBuffer);
+  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  sprintf((char *) OutputBuffer, "Hello %d\n", i++);
-//	  PrintOutputBuffer(OutputBuffer);
-//
-//	  sprintf((char *) OutputBuffer, "Press any key to continue...\r\n");
-//	  PrintOutputBuffer(OutputBuffer);
-//
-//	  ReceiveCharacter = GetUserInput();
-//
-//	  sprintf((char *) OutputBuffer, "You entered: %c\r\n", ReceiveCharacter);
-//	  PrintOutputBuffer(OutputBuffer);
+	  if (test_variable) {
+	  	  test_variable = 0;
+	  	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
+	  }
+	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -166,7 +171,42 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  test_variable = 1;
+  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
+  if (ReceiveCharacter == '0') {
+	  uint32_t Voltage;
+	  uint32_t Current;
+	  uint32_t Power;
+	  //Read_Sensor_ValuesACS37800(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+	  Get_Sensor_Values_for_Panel_hc_test(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+	  Power = Calculate_Power_hc(Voltage, Current);
+	  for (int i = 0; i < 12; i++) {
+		  if (i / 3 == 0) {
+			  OutputBuffer[i] = (Voltage >> (i % 4)) & 0xff;
+		  }
+		  else if (i / 3 == 1) {
+			  OutputBuffer[i] = (Current >> (i % 4)) & 0xff;
+		  }
+		  else {
+			  OutputBuffer[i] = (Power >> (i % 4)) & 0xff;
+		  }
+	  }
+	  OutputBuffer[DATALENGTH] = '\r';
+	  OutputBuffer[DATALENGTH + 1] = '\n';
+	  OutputBuffer[DATALENGTH + 2] = '\0';
+	  PrintOutputData(OutputBuffer);
+  }
+  else if (ReceiveCharacter == '1') {
+	  sprintf((char *)OutputBuffer, "P&O\r\n");
+	  PrintOutputBuffer(OutputBuffer);
+  }
+  else if (ReceiveCharacter == '2') {
+	  sprintf((char *)OutputBuffer, "HillClimbing\r\n");
+	  PrintOutputBuffer(OutputBuffer);
+  }
+}
 /* USER CODE END 4 */
 
 /**

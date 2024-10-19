@@ -76,10 +76,16 @@ uint32_t Calculate_Voltage_RMSACS37800(uint16_t Vin)
 	return V_line;
 }
 
-uint32_t Calculate_Current_RMSACS378000(uint16_t Iin, uint16_t Vin, uint16_t V_line)
+uint32_t Calculate_Current_RMSACS37800(uint16_t Iin, uint16_t Vin, uint16_t V_line)
 {
 	uint32_t I_line = Iin * (V_line / Vin);
 	return I_line;
+}
+
+void Get_Sensor_Values_for_Panel_hc_test(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current)
+{
+	*Voltage = 20;
+	*Current = 10;
 }
 
 void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current)

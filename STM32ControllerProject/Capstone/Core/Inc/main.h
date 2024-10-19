@@ -33,6 +33,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include "buckboostTPS55288.h"
 #include "sensorACS37800.h"
+#include "hillclimbing.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

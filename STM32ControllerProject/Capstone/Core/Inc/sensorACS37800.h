@@ -37,6 +37,8 @@ uint32_t Calculate_Voltage_RMSACS37800(uint16_t V_line);
 
 uint32_t Calculate_Current_RMSACS37800(uint16_t Iin, uint16_t Vin, uint16_t V_line);
 
+void Get_Sensor_Values_for_Panel_hc_test(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current);
+
 void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current);
 
 HAL_StatusTypeDef WriteByteACS37800(uint8_t Converter_Index, uint8_t Register_Address, uint32_t WriteData);
