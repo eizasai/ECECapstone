@@ -81,7 +81,15 @@ void Enable_Output_TPS55288(uint8_t Converter_Index);
  * @param Converter_Index: The arbitrary index of the converter in the system
  * @param Increase_Boolean: boolean to dictate whether the voltage is increased or decreased
  */
-void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase_Boolean);
+void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase_Boolean, uint8_t Change_Amount);
+
+/**
+ * @brief Manually Set Reference Voltage to change output
+ * @retval None.
+ * @param Converter_Index: The arbitrary index of the converter in the system
+ * @param Reference_Voltage: Value to set reference voltage to
+ */
+void Set_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint32_t Reference_Voltage);
 
 /**
  * @brief Write a byte of data to the specified device address on the specified I2C line

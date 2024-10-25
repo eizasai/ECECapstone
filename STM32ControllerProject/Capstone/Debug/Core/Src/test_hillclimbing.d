@@ -1,5 +1,5 @@
-Core/Src/hillclimbing.o: ../Core/Src/hillclimbing.c \
- ../Core/Inc/hillclimbing.h ../Core/Inc/main.h \
+Core/Src/test_hillclimbing.o: ../Core/Src/test_hillclimbing.c \
+ ../Core/Inc/test_hillclimbing.h ../Core/Inc/usart.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,8 +30,9 @@ Core/Src/hillclimbing.o: ../Core/Src/hillclimbing.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/buckboostTPS55288.h ../Core/Inc/i2c.h \
  ../Core/Inc/sensorACS37800.h ../Core/Inc/hillclimbing.h \
- ../Core/Inc/test_hillclimbing.h ../Core/Inc/usart.h
-../Core/Inc/hillclimbing.h:
+ ../Core/Inc/test_hillclimbing.h
+../Core/Inc/test_hillclimbing.h:
+../Core/Inc/usart.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -66,4 +67,3 @@ Core/Src/hillclimbing.o: ../Core/Src/hillclimbing.c \
 ../Core/Inc/sensorACS37800.h:
 ../Core/Inc/hillclimbing.h:
 ../Core/Inc/test_hillclimbing.h:
-../Core/Inc/usart.h:

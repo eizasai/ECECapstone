@@ -24,7 +24,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,9 +33,12 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define BUFFERLENGTH 				64
+#define BUFFERLENGTH 				128
 #define DATALENGTH					12
-#define DEBUG_CONFIGURATION_MODE 	1
+#define DEBUG_CONFIGURATION_MODE 	0
+#define TESTING_MODE				1
+#define TESTING_HC					1
+#define TESTING_I2C_COMMUNICATION	1
 #define NUMBER_OF_CONVERTERS 		3
 #define PERTURB_AND_OBSERVE 		1
 #define HILL_CLIMBING 				2
@@ -64,7 +66,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 uint8_t ReceiveCharacter;
 uint8_t OutputBuffer[BUFFERLENGTH];
-uint8_t test_variable = 0;
+uint8_t Interrupt_Occurred = 0;
 HAL_StatusTypeDef HAL_Status;
 uint8_t Current_Mode = PERTURB_AND_OBSERVE;
 /* USER CODE END 0 */
@@ -77,7 +79,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-//	uint8_t Single_Converter_Index = 0;
+  uint8_t Single_Converter_Index = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -103,22 +105,86 @@ int main(void)
   MX_I2C2_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-//  if (DEBUG_CONFIGURATION_MODE) { // Configures each of the buck converter device addresses to prevent conflicts
-//	  Configure_Slave_AddressTPS55288(Single_Converter_Index);
-//  }
-  sprintf((char *)OutputBuffer, "Communication Started\r\n");
-  PrintOutputBuffer(OutputBuffer);
-  sprintf((char *)OutputBuffer, "Receiving Character\r\n");
-  PrintOutputBuffer(OutputBuffer);
-  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
+  if (DEBUG_CONFIGURATION_MODE) { // Configures each of the buck converter device addresses to prevent conflicts
+	  Configure_Slave_AddressTPS55288(Single_Converter_Index);
+	  Configure_Slave_AddressACS37800(Single_Converter_Index);
+	  sprintf((char *)OutputBuffer, "Slave Addresses Configured\r\n");
+	  PrintOutputBuffer(OutputBuffer);
+  }
+  else if (TESTING_MODE) {
+	  if (TESTING_HC) {
+		  sprintf((char *)OutputBuffer, "Starting Tests\r\n");
+		  PrintOutputBuffer(OutputBuffer);
+		  TestSolarPanel_hc TestPanels[2];
+		  uint8_t Converter_Index = 0;
+		  uint32_t Voltage = 1;
+		  uint32_t Current = 1;
+		  Update_Test_Sensor_Values_hc(Voltage, Current);
+		  TestInitialize_HillClimbing(2, TestPanels);
+
+		  sprintf((char *)OutputBuffer, "Testing Voltage Increase, Should yield increasing message\r\n");
+		  PrintOutputBuffer(OutputBuffer);
+		  Voltage = 2;
+		  Update_Test_Sensor_Values_hc(Voltage, Current);
+		  TestUpdate_Panel_State_hc(Converter_Index, TestPanels);
+		  sprintf((char *)OutputBuffer, "Previous Voltage: %ld, Current_Voltage: %ld\r\n", TestPanels[Converter_Index].Previous_Voltage, TestPanels[Converter_Index].Current_Voltage);
+		  PrintOutputBuffer(OutputBuffer);
+
+		  sprintf((char *)OutputBuffer, "Testing Voltage Decrease and Current Increase, Should yield decreasing message\r\n");
+		  PrintOutputBuffer(OutputBuffer);
+		  Voltage = 1;
+		  Current = 3;
+		  Update_Test_Sensor_Values_hc(Voltage, Current);
+		  TestUpdate_Panel_State_hc(Converter_Index, TestPanels);
+		  sprintf((char *)OutputBuffer, "Previous Voltage: %ld, Current_Voltage: %ld\r\n", TestPanels[Converter_Index].Previous_Voltage, TestPanels[Converter_Index].Current_Voltage);
+		  PrintOutputBuffer(OutputBuffer);
+
+		  sprintf((char *)OutputBuffer, "Testing Panel Reaching MPP\r\n");
+		  PrintOutputBuffer(OutputBuffer);
+		  TestUpdate_Panel_State_hc(Converter_Index, TestPanels);
+		  sprintf((char *)OutputBuffer, "At_Mpp Value: %d\r\n", TestPanels[Converter_Index].At_MPP);
+		  PrintOutputBuffer(OutputBuffer);
+
+		  sprintf((char *)OutputBuffer, "Setting Second panel to have Current 6 and Voltage 4 Reaching MPP\r\n");
+		  PrintOutputBuffer(OutputBuffer);
+		  Voltage = 4;
+		  Current = 6;
+		  Converter_Index = 1;
+		  Update_Test_Sensor_Values_hc(Voltage, Current);
+		  TestUpdate_Panel_State_hc(Converter_Index, TestPanels);
+		  TestUpdate_Panel_State_hc(Converter_Index, TestPanels);
+		  sprintf((char *)OutputBuffer, "Voltage: %ld, Current: %ld, At_MPP: %d\r\n", TestPanels[Converter_Index].Current_Voltage, TestPanels[Converter_Index].Current_Current, TestPanels[Converter_Index].At_MPP);
+		  PrintOutputBuffer(OutputBuffer);
+
+		  sprintf((char *)OutputBuffer, "Testing First Panel Entering Partial Shading, Should yield increasing message\r\n");
+		  PrintOutputBuffer(OutputBuffer);
+		  Voltage = 1;
+		  Current = 3;
+		  Converter_Index = 0;
+		  Update_Test_Sensor_Values_hc(Voltage, Current);
+		  TestUpdate_Panel_State_hc(Converter_Index, TestPanels);
+		  sprintf((char *)OutputBuffer, "Voltage: %ld, Current: %ld, Shading: %d, At_MPP: %d\r\n", TestPanels[Converter_Index].Current_Voltage, TestPanels[Converter_Index].Current_Current, TestPanels[Converter_Index].Shading_Conditions, TestPanels[Converter_Index].At_MPP);
+		  PrintOutputBuffer(OutputBuffer);
+	  }
+	  if (TESTING_I2C_COMMUNICATION) {
+
+	  }
+  }
+  else {
+	  sprintf((char *)OutputBuffer, "Communication Started\r\n");
+	  PrintOutputBuffer(OutputBuffer);
+	  sprintf((char *)OutputBuffer, "Receiving Character\r\n");
+	  PrintOutputBuffer(OutputBuffer);
+	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (test_variable) {
-	  	  test_variable = 0;
+	  if (Interrupt_Occurred) {
+	  	  Interrupt_Occurred = 0;
 	  	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
 	  }
 	  HAL_Delay(500);
@@ -173,37 +239,30 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  test_variable = 1;
+  if (TESTING_MODE) return;
+  Interrupt_Occurred = 1;
   HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
   if (ReceiveCharacter == '0') {
-	  uint32_t Voltage;
-	  uint32_t Current;
-	  uint32_t Power;
-	  //Read_Sensor_ValuesACS37800(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
-	  Get_Sensor_Values_for_Panel_hc_test(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+	  float Voltage;
+	  float Current;
+	  float Power;
+	  Read_Sensor_ValuesACS37800(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+//	  Get_Sensor_Values_for_Panel_hc_test(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+//	  Voltage = 20;
+//	  Current = 30;
 	  Power = Calculate_Power_hc(Voltage, Current);
-	  for (int i = 0; i < 12; i++) {
-		  if (i / 3 == 0) {
-			  OutputBuffer[i] = (Voltage >> (i % 4)) & 0xff;
-		  }
-		  else if (i / 3 == 1) {
-			  OutputBuffer[i] = (Current >> (i % 4)) & 0xff;
-		  }
-		  else {
-			  OutputBuffer[i] = (Power >> (i % 4)) & 0xff;
-		  }
-	  }
-	  OutputBuffer[DATALENGTH] = '\r';
-	  OutputBuffer[DATALENGTH + 1] = '\n';
-	  OutputBuffer[DATALENGTH + 2] = '\0';
+	  memcpy(OutputBuffer, &Voltage, 4);
+	  memcpy(OutputBuffer + 4, &Current, 4);
+	  memcpy(OutputBuffer + 8, &Power, 4);
+	  OutputBuffer[DATALENGTH] = '\0';
 	  PrintOutputData(OutputBuffer);
   }
   else if (ReceiveCharacter == '1') {
-	  sprintf((char *)OutputBuffer, "P&O\r\n");
+	  sprintf((char *)OutputBuffer, "P&O");
 	  PrintOutputBuffer(OutputBuffer);
   }
   else if (ReceiveCharacter == '2') {
-	  sprintf((char *)OutputBuffer, "HillClimbing\r\n");
+	  sprintf((char *)OutputBuffer, "HC");
 	  PrintOutputBuffer(OutputBuffer);
   }
 }

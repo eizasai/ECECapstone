@@ -27,19 +27,23 @@
 #define VRMS				0
 #define IRMS 				16
 
+#define NUMBER_OF_SAMPLES_FOR_RMS 127
+
 I2C_HandleTypeDef *Determine_I2C_Bus_ACS37800(uint8_t Converter_Index);
+
+void Update_Sample_Values(uint8_t Converter_Index, uint32_t Number_of_Samples);
 
 void Configure_Slave_AddressACS37800(uint8_t Converter_Index);
 
 void Disable_Peripheral_Addressing_CircuitACS37800(uint8_t Converter_Index);
 
-uint32_t Calculate_Voltage_RMSACS37800(uint16_t V_line);
+uint32_t Calculate_Voltage_RMSACS37800(int16_t Vin);
 
-uint32_t Calculate_Current_RMSACS37800(uint16_t Iin, uint16_t Vin, uint16_t V_line);
+uint32_t Calculate_Current_RMSACS37800(int16_t Iin, int16_t Vin, float V_line);
 
-void Get_Sensor_Values_for_Panel_hc_test(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current);
+void Get_Sensor_Values_for_Panel_hc_test(uint8_t Converter_Index, float *Voltage, float *Current);
 
-void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current);
+void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, float *Voltage, float *Current);
 
 HAL_StatusTypeDef WriteByteACS37800(uint8_t Converter_Index, uint8_t Register_Address, uint32_t WriteData);
 

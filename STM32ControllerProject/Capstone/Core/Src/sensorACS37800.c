@@ -30,6 +30,11 @@ I2C_HandleTypeDef *Determine_I2C_Bus_ACS37800(uint8_t Converter_Index)
 	return I2C_Line_Address;
 }
 
+void Update_Sample_Values(uint8_t Converter_Index, uint32_t Number_of_Samples)
+{
+
+}
+
 void Configure_Slave_AddressACS37800(uint8_t Converter_Index)
 {
 	uint8_t address_type = AddressesACS37800[Converter_Index % 2]; // 0 sets device address to 0x74, 1 to 0x75
@@ -52,6 +57,7 @@ void Configure_Slave_AddressACS37800(uint8_t Converter_Index)
 			Error_Handler();
 		}
 	}
+	Update_Sample_Values(Converter_Index, NUMBER_OF_SAMPLES_FOR_RMS);
 	Disable_Peripheral_Addressing_CircuitACS37800(Converter_Index);
 }
 
@@ -70,30 +76,33 @@ void Disable_Peripheral_Addressing_CircuitACS37800(uint8_t Converter_Index)
 	}
 }
 
-uint32_t Calculate_Voltage_RMSACS37800(uint16_t Vin)
+uint32_t Calculate_Voltage_RMSACS37800(int16_t Vin)
 {
-	uint32_t V_line = (Vin * (RISO + RSENSE)) / RSENSE;
+	float Vin_as_float = Vin / (1 << 14);
+	uint32_t V_line = (Vin_as_float * (RISO + RSENSE)) / RSENSE;
 	return V_line;
 }
 
-uint32_t Calculate_Current_RMSACS37800(uint16_t Iin, uint16_t Vin, uint16_t V_line)
+uint32_t Calculate_Current_RMSACS37800(int16_t Iin, int16_t Vin, float V_line)
 {
-	uint32_t I_line = Iin * (V_line / Vin);
+	float Vin_as_float = Vin / (1 << 14);
+	float Iin_as_float = Iin / (1 << 14);
+	uint32_t I_line = Iin_as_float * (V_line / Vin_as_float);
 	return I_line;
 }
 
-void Get_Sensor_Values_for_Panel_hc_test(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current)
+void Get_Sensor_Values_for_Panel_hc_test(uint8_t Converter_Index, float *Voltage, float *Current)
 {
-	*Voltage = 20;
-	*Current = 10;
+	*Voltage = 1.6;
+	*Current = 7.3;
 }
 
-void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, uint32_t *Voltage, uint32_t *Current)
+void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, float *Voltage, float *Current)
 {
 	HAL_StatusTypeDef HAL_Status = HAL_ERROR;
 	uint32_t ReadValue;
-	uint16_t Vin;
-	uint16_t Iin;
+	int16_t Vin;
+	int16_t Iin;
 	ReadValue = ReadByteACS37800(Converter_Index, RMS_REGISTER, &HAL_Status);
 	Vin = ReadValue & 0xffff;
 	Iin = (ReadValue >> 16) & 0xffff;

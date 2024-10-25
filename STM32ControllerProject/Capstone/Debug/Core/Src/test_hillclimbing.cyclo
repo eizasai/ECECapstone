@@ -1,0 +1,12 @@
+../Core/Src/test_hillclimbing.c:13:6:Update_Test_Sensor_Values_hc	1
+../Core/Src/test_hillclimbing.c:19:6:TestRead_Sensor_ValuesACS37800	1
+../Core/Src/test_hillclimbing.c:25:6:TestUpdate_Reference_Voltage_TPS55288	3
+../Core/Src/test_hillclimbing.c:40:6:TestInitialize_HillClimbing	2
+../Core/Src/test_hillclimbing.c:56:6:TestGet_Sensor_Values_for_Panel_hc	1
+../Core/Src/test_hillclimbing.c:61:9:TestCalculate_Power_hc	1
+../Core/Src/test_hillclimbing.c:66:9:TestCalculate_Average_Current_hc	2
+../Core/Src/test_hillclimbing.c:75:6:TestChange_Panel_Values_hc	1
+../Core/Src/test_hillclimbing.c:80:6:TestUpdate_Panel_Parameters_hc	1
+../Core/Src/test_hillclimbing.c:90:9:TestCheck_if_All_are_MPPT_hc	3
+../Core/Src/test_hillclimbing.c:100:6:TestUpdate_Panel_State_hc	17
+../Core/Src/test_hillclimbing.c:142:6:TestUpdate_All_Panel_States_hc	2

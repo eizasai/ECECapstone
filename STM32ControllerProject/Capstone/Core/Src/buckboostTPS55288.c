@@ -71,7 +71,7 @@ void Enable_Output_TPS55288(uint8_t Converter_Index)
 	}
 }
 
-void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase_Boolean)
+void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase_Boolean, uint8_t Change_Amount)
 {
 	uint16_t Current_Reference_Voltage = 0;
 	uint8_t ReadValue = 0;
@@ -89,20 +89,36 @@ void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase
 	uint16_t Next_Reference_Voltage;
 	uint8_t Ref1_Write;
 	uint8_t Ref0_Write;
-	if (Increase_Boolean && Current_Reference_Voltage < 0x3FE) {
-		Next_Reference_Voltage = Current_Reference_Voltage + 2;
+	if (Increase_Boolean && Current_Reference_Voltage <= (0x3FF - Change_Amount)) {
+		Next_Reference_Voltage = Current_Reference_Voltage + Change_Amount;
 		Ref1_Write = ((Next_Reference_Voltage >> 8) & MASKSTART) + (ReadValue & (~REF1MASK));
 		Ref0_Write = Next_Reference_Voltage & MASKSTART;
 		WriteByteTPS55288(Converter_Index, REF0, Ref0_Write);
 		WriteByteTPS55288(Converter_Index, REF1, Ref1_Write);
 	}
-	else if ((!Increase_Boolean) && Current_Reference_Voltage > 1) {
-		Next_Reference_Voltage = Current_Reference_Voltage - 2;
+	else if ((!Increase_Boolean) && Current_Reference_Voltage >= Change_Amount) {
+		Next_Reference_Voltage = Current_Reference_Voltage - Change_Amount;
 		Ref1_Write = ((Next_Reference_Voltage >> 8) & MASKSTART) + (ReadValue & (~REF1MASK));
 		Ref0_Write = Next_Reference_Voltage & MASKSTART;
 		WriteByteTPS55288(Converter_Index, REF0, Ref0_Write);
 		WriteByteTPS55288(Converter_Index, REF1, Ref1_Write);
 	}
+}
+
+void Set_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint32_t Reference_Voltage)
+{
+	uint8_t ReadValue = 0;
+	HAL_StatusTypeDef HAL_Status;
+	ReadValue = ReadByteTPS55288(Converter_Index, REF1, &HAL_Status);
+	if (HAL_Status != HAL_OK) {
+		Error_Handler();
+	}
+	uint8_t Ref1_Write;
+	uint8_t Ref0_Write;
+	Ref1_Write = ((Reference_Voltage >> 8) & MASKSTART) + (ReadValue & (~REF1MASK));
+	Ref0_Write = Reference_Voltage & MASKSTART;
+	WriteByteTPS55288(Converter_Index, REF0, Ref0_Write);
+	WriteByteTPS55288(Converter_Index, REF1, Ref1_Write);
 }
 
 HAL_StatusTypeDef WriteByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, uint8_t WriteData)
