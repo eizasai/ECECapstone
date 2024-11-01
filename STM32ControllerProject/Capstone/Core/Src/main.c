@@ -21,7 +21,12 @@
 #include "i2c.h"
 #include "usart.h"
 #include "gpio.h"
-
+#include "buckboostTPS55288.h"
+#include "sensorACS37800.h"
+#include "perturb_and_observe.h"
+#include "hillclimbing.h"
+#include "sweeppanels.h"
+#include "test_hillclimbing.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -36,13 +41,14 @@
 #define BUFFERLENGTH 				128
 #define DATALENGTH					12
 #define DEBUG_CONFIGURATION_MODE 	0
-#define TESTING_MODE				1
+#define TESTING_MODE				0
 #define TESTING_HC					1
 #define TESTING_I2C_COMMUNICATION	1
-#define NUMBER_OF_CONVERTERS 		3
+#define NUMBER_OF_CONVERTERS 		1
 #define PERTURB_AND_OBSERVE 		1
 #define HILL_CLIMBING 				2
 #define SMART_ALGORITHM 			3
+#define SWEEP_PANELS				4
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -69,6 +75,7 @@ uint8_t OutputBuffer[BUFFERLENGTH];
 uint8_t Interrupt_Occurred = 0;
 HAL_StatusTypeDef HAL_Status;
 uint8_t Current_Mode = PERTURB_AND_OBSERVE;
+SolarPanel SolarPanelsMain[NUMBER_OF_CONVERTERS];
 /* USER CODE END 0 */
 
 /**
@@ -117,8 +124,8 @@ int main(void)
 		  PrintOutputBuffer(OutputBuffer);
 		  TestSolarPanel_hc TestPanels[2];
 		  uint8_t Converter_Index = 0;
-		  uint32_t Voltage = 1;
-		  uint32_t Current = 1;
+		  int32_t Voltage = 1;
+		  int32_t Current = 1;
 		  Update_Test_Sensor_Values_hc(Voltage, Current);
 		  TestInitialize_HillClimbing(2, TestPanels);
 
@@ -169,6 +176,7 @@ int main(void)
 	  if (TESTING_I2C_COMMUNICATION) {
 
 	  }
+	  while (1);
   }
   else {
 	  sprintf((char *)OutputBuffer, "Communication Started\r\n");
@@ -186,6 +194,23 @@ int main(void)
 	  if (Interrupt_Occurred) {
 	  	  Interrupt_Occurred = 0;
 	  	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
+	  	  if (Current_Mode == SWEEP_PANELS) {
+	  		  Increase_Converter_Reference_Voltage(8);
+	  	  }
+	  }
+	  switch (Current_Mode) {
+		  case SWEEP_PANELS:
+
+			  break;
+		  case PERTURB_AND_OBSERVE:
+
+			  break;
+		  case HILL_CLIMBING:
+
+			  break;
+		  case SMART_ALGORITHM:
+
+			  break;
 	  }
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
@@ -246,8 +271,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	  float Voltage;
 	  float Current;
 	  float Power;
-	  Read_Sensor_ValuesACS37800(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
-//	  Get_Sensor_Values_for_Panel_hc_test(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+//	  Read_Sensor_ValuesACS37800(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
+	  Get_Sensor_Values_for_Panel_hc_test(NUMBER_OF_CONVERTERS - 1, &Voltage, &Current);
 //	  Voltage = 20;
 //	  Current = 30;
 	  Power = Calculate_Power_hc(Voltage, Current);
@@ -260,10 +285,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   else if (ReceiveCharacter == '1') {
 	  sprintf((char *)OutputBuffer, "P&O");
 	  PrintOutputBuffer(OutputBuffer);
+	  Current_Mode = PERTURB_AND_OBSERVE;
   }
   else if (ReceiveCharacter == '2') {
 	  sprintf((char *)OutputBuffer, "HC");
 	  PrintOutputBuffer(OutputBuffer);
+	  Current_Mode = HILL_CLIMBING;
+  }
+  else if (ReceiveCharacter == '3') {
+	  sprintf((char *)OutputBuffer, "SA");
+	  PrintOutputBuffer(OutputBuffer);
+	  Current_Mode = SMART_ALGORITHM;
+  }
+  else if (ReceiveCharacter == '4') {
+	  sprintf((char *)OutputBuffer, "PS");
+	  PrintOutputBuffer(OutputBuffer);
+	  Current_Mode = SWEEP_PANELS;
+	  Reset_Converters(NUMBER_OF_CONVERTERS);
   }
 }
 /* USER CODE END 4 */

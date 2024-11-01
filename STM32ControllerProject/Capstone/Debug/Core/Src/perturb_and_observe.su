@@ -1,0 +1,9 @@
+../Core/Src/perturb_and_observe.c:20:6:Initialize_PerturbAndObserve	32	static
+../Core/Src/perturb_and_observe.c:36:6:Get_Sensor_Values_for_Panel_po	24	static
+../Core/Src/perturb_and_observe.c:41:7:Calculate_Power_po	16	static
+../Core/Src/perturb_and_observe.c:46:7:Calculate_Average_Current_po	24	static
+../Core/Src/perturb_and_observe.c:55:6:Change_Panel_Values_po	16	static
+../Core/Src/perturb_and_observe.c:60:6:Update_Panel_Parameters_po	24	static
+../Core/Src/perturb_and_observe.c:70:9:Check_if_All_are_MPPT_po	24	static
+../Core/Src/perturb_and_observe.c:80:6:Update_Panel_State_po	48	static
+../Core/Src/perturb_and_observe.c:122:6:Update_All_Panel_States_PO	24	static

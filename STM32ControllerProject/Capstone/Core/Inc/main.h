@@ -31,18 +31,22 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "buckboostTPS55288.h"
-#include "sensorACS37800.h"
-#include "hillclimbing.h"
-#include "test_hillclimbing.h"
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+typedef struct SolarPanel {
+	float Previous_Voltage;
+	float Current_Voltage;
+	float Previous_Current;
+	float Current_Current;
+	uint8_t Shading_Conditions;
+	uint8_t At_MPP;
+} SolarPanel;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

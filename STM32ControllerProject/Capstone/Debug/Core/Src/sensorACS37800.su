@@ -1,10 +1,10 @@
 ../Core/Src/sensorACS37800.c:15:20:Determine_I2C_Bus_ACS37800	24	static
 ../Core/Src/sensorACS37800.c:33:6:Update_Sample_Values	16	static
 ../Core/Src/sensorACS37800.c:38:6:Configure_Slave_AddressACS37800	24	static
-../Core/Src/sensorACS37800.c:64:6:Disable_Peripheral_Addressing_CircuitACS37800	24	static
-../Core/Src/sensorACS37800.c:79:10:Calculate_Voltage_RMSACS37800	24	static
-../Core/Src/sensorACS37800.c:86:10:Calculate_Current_RMSACS37800	32	static
-../Core/Src/sensorACS37800.c:94:6:Get_Sensor_Values_for_Panel_hc_test	24	static
-../Core/Src/sensorACS37800.c:100:6:Read_Sensor_ValuesACS37800	40	static
-../Core/Src/sensorACS37800.c:113:19:WriteByteACS37800	48	static
-../Core/Src/sensorACS37800.c:135:9:ReadByteACS37800	56	static
+../Core/Src/sensorACS37800.c:65:6:Disable_Peripheral_Addressing_CircuitACS37800	24	static
+../Core/Src/sensorACS37800.c:81:10:Calculate_Voltage_RMSACS37800	24	static
+../Core/Src/sensorACS37800.c:88:10:Calculate_Current_RMSACS37800	32	static
+../Core/Src/sensorACS37800.c:96:6:Get_Sensor_Values_for_Panel_hc_test	24	static
+../Core/Src/sensorACS37800.c:102:6:Read_Sensor_ValuesACS37800	40	static
+../Core/Src/sensorACS37800.c:115:19:WriteByteACS37800	48	static
+../Core/Src/sensorACS37800.c:137:9:ReadByteACS37800	56	static

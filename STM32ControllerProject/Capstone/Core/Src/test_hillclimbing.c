@@ -10,7 +10,7 @@ uint32_t TestConverter_Number = 0;
 uint32_t Test_Sensor_Voltage = 0;
 uint32_t Test_Sensor_Current = 0;
 
-void Update_Test_Sensor_Values_hc(uint32_t Voltage, uint32_t Current)
+void Update_Test_Sensor_Values_hc(int32_t Voltage, int32_t Current)
 {
 	Test_Sensor_Voltage = Voltage;
 	Test_Sensor_Current = Current;
@@ -77,7 +77,7 @@ void TestChange_Panel_Values_hc(uint8_t Converter_Index, uint8_t Increase, uint8
 	TestUpdate_Reference_Voltage_TPS55288(Converter_Index, Increase, Change_Amount);
 }
 
-void TestUpdate_Panel_Parameters_hc(uint8_t Converter_Index, uint32_t New_Voltage, uint32_t New_Current, uint8_t At_mpp, uint8_t Partially_shaded, TestSolarPanel_hc *Panels)
+void TestUpdate_Panel_Parameters_hc(uint8_t Converter_Index, int32_t New_Voltage, int32_t New_Current, uint8_t At_mpp, uint8_t Partially_shaded, TestSolarPanel_hc *Panels)
 {
 	Panels[Converter_Index].Previous_Current = Panels[Converter_Index].Current_Current;
 	Panels[Converter_Index].Previous_Voltage = Panels[Converter_Index].Current_Voltage;

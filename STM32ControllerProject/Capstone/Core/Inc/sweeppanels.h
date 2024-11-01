@@ -14,8 +14,6 @@
 
 void Reset_Converters(uint8_t Number_of_Converters);
 
-void Increase_Converter_Reference_Voltage(uint32_t Increase_Rate);
-
-void Get_Sensor_Measurements(float *Voltage, float *Current);
+void Increase_Converter_Reference_Voltage(uint8_t Increase_Rate);
 
 #endif /* INC_SWEEPPANELS_H_ */

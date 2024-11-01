@@ -8,7 +8,6 @@
 #ifndef INC_TEST_HILLCLIMBING_H_
 #define INC_TEST_HILLCLIMBING_H_
 
-#include <stdlib.h>
 #include "usart.h"
 #include "main.h"
 
@@ -32,7 +31,7 @@ typedef struct TestSolarPanel_hc_struct {
 	uint8_t At_MPP;
 } TestSolarPanel_hc;
 
-void Update_Test_Sensor_Values_hc(uint32_t Voltage, uint32_t Current);
+void Update_Test_Sensor_Values_hc(int32_t Voltage, int32_t Current);
 
 void TestRead_Sensor_ValuesACS37800(uint8_t Converter_Index, int32_t *Voltage, int32_t *Current);
 
@@ -50,7 +49,7 @@ void TestChange_Panel_Values_hc(uint8_t Converter_Index, uint8_t Increase, uint8
 
 uint8_t TestCheck_if_All_are_MPPT_hc(TestSolarPanel_hc *Panels);
 
-void TestUpdate_Panel_Parameters_hc(uint8_t Converter_Index, uint32_t New_Voltage, uint32_t New_Current, uint8_t At_mpp, uint8_t Partially_shaded, TestSolarPanel_hc *Panels);
+void TestUpdate_Panel_Parameters_hc(uint8_t Converter_Index, int32_t New_Voltage, int32_t New_Current, uint8_t At_mpp, uint8_t Partially_shaded, TestSolarPanel_hc *Panels);
 
 void TestUpdate_Panel_State_hc(uint8_t Converter_Index, TestSolarPanel_hc *Panels);
 

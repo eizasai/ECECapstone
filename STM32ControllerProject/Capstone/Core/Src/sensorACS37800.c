@@ -41,18 +41,19 @@ void Configure_Slave_AddressACS37800(uint8_t Converter_Index)
 	HAL_StatusTypeDef HAL_Status = HAL_ERROR;
 	uint8_t ReadValue = 0;
 	uint8_t WriteValue = 0;
-	ReadValue = ReadByteTPS55288(Converter_Index, I2C_ADDR_REGISTER + EEPROM, &HAL_Status);
+	uint8_t Address = I2C_ADDR_REGISTER + EEPROM;
+	ReadValue = ReadByteACS37800(Converter_Index, Address, &HAL_Status);
 	WriteValue = (ReadValue & I2C_ADDR_MASK) + (address_type << I2C_SLV_ADDR);
 	if (HAL_Status == HAL_OK) {
-		HAL_Status = WriteByteTPS55288(Converter_Index, MODE, WriteValue);
+		HAL_Status = WriteByteACS37800(Converter_Index, Address, WriteValue);
 	}
 	else {
 		Converter_Index = Converter_Index + (Converter_Index % 2 ? -1 : 1);
-		ReadValue = ReadByteTPS55288(Converter_Index, MODE, &HAL_Status);
+		ReadValue = ReadByteACS37800(Converter_Index, Address, &HAL_Status);
 		if (HAL_Status != HAL_OK) {
 					Error_Handler();
 		}
-		HAL_Status = WriteByteTPS55288(Converter_Index, MODE, WriteValue);
+		HAL_Status = WriteByteACS37800(Converter_Index, Address, WriteValue);
 		if (HAL_Status != HAL_OK) {
 			Error_Handler();
 		}
@@ -66,13 +67,14 @@ void Disable_Peripheral_Addressing_CircuitACS37800(uint8_t Converter_Index)
 	uint8_t ReadValue = 0;
 	uint8_t WriteValue = 0;
 	HAL_StatusTypeDef HAL_Status = HAL_ERROR;
-	ReadValue = ReadByteTPS55288(Converter_Index, I2C_ADDR_REGISTER + EEPROM, &HAL_Status);
+	uint8_t Address = I2C_ADDR_REGISTER + EEPROM;
+	ReadValue = ReadByteACS37800(Converter_Index, Address, &HAL_Status);
 	if (HAL_Status != HAL_OK) {
 		Error_Handler();
 	}
 	WriteValue = (ReadValue & I2C_DIS_MASK) + (1 << I2C_DIS_SLV_ADDR);
 	if (HAL_Status == HAL_OK) {
-		HAL_Status = WriteByteTPS55288(Converter_Index, MODE, WriteValue);
+		HAL_Status = WriteByteACS37800(Converter_Index, Address, WriteValue);
 	}
 }
 

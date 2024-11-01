@@ -53,6 +53,7 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index)
 			Error_Handler();
 		}
 	}
+	Enable_Output_TPS55288(Converter_Index);
 }
 
 void Enable_Output_TPS55288(uint8_t Converter_Index)

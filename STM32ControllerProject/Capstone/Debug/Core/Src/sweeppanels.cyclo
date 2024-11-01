@@ -1,1 +1,2 @@
-../Core/Src/sweeppanels.c:9:6:Reset_Converters	2
+../Core/Src/sweeppanels.c:11:6:Reset_Converters	2
+../Core/Src/sweeppanels.c:19:6:Increase_Converter_Reference_Voltage	2
