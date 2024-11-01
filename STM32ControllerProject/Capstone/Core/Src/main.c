@@ -199,14 +199,11 @@ int main(void)
 	  	  }
 	  }
 	  switch (Current_Mode) {
-		  case SWEEP_PANELS:
-
-			  break;
 		  case PERTURB_AND_OBSERVE:
-
+			  Update_All_Panel_States_po(SolarPanels);
 			  break;
 		  case HILL_CLIMBING:
-
+			  Update_All_Panel_States_hc(SolarPanels);
 			  break;
 		  case SMART_ALGORITHM:
 
@@ -286,22 +283,25 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	  sprintf((char *)OutputBuffer, "P&O");
 	  PrintOutputBuffer(OutputBuffer);
 	  Current_Mode = PERTURB_AND_OBSERVE;
+//	  Initialize_PerturbAndObserve(NUMBER_OF_CONVERTERS, SolarPanels);
   }
   else if (ReceiveCharacter == '2') {
 	  sprintf((char *)OutputBuffer, "HC");
 	  PrintOutputBuffer(OutputBuffer);
 	  Current_Mode = HILL_CLIMBING;
+	  Initialize_HillClimbing(NUMBER_OF_CONVERTERS, SolarPanels);
   }
   else if (ReceiveCharacter == '3') {
 	  sprintf((char *)OutputBuffer, "SA");
 	  PrintOutputBuffer(OutputBuffer);
 	  Current_Mode = SMART_ALGORITHM;
+
   }
   else if (ReceiveCharacter == '4') {
 	  sprintf((char *)OutputBuffer, "PS");
 	  PrintOutputBuffer(OutputBuffer);
 	  Current_Mode = SWEEP_PANELS;
-	  Reset_Converters(NUMBER_OF_CONVERTERS);
+//	  Reset_Converters(NUMBER_OF_CONVERTERS);
   }
 }
 /* USER CODE END 4 */
