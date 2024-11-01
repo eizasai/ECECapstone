@@ -112,6 +112,40 @@ void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, float *Voltage, float *
 	*Current = Calculate_Current_RMSACS37800(Iin, Vin, *Voltage);
 }
 
+void Voltage_Average_Select_EnableACS37800(uint8_t Converter_Index)
+{
+	HAL_StatusTypeDef HAL_Status = HAL_ERROR;
+	uint8_t Address = SEL_REGISTER + EEPROM;
+	uint32_t ReadValue;
+	uint32_t WriteValue;
+	ReadValue = ReadByteACS37800(Converter_Index, Address, &HAL_Status);
+	if (HAL_Status != HAL_OK) {
+		Error_Handler();
+	}
+	WriteValue = ReadValue & SEL_MASK;
+	HAL_Status = WriteByteACS37800(Converter_Index, Address, WriteValue);
+	if (HAL_Status != HAL_OK) {
+		Error_Handler();
+	}
+}
+
+void Current_Average_Select_EnableACS37800(uint8_t Converter_Index)
+{
+	HAL_StatusTypeDef HAL_Status = HAL_ERROR;
+	uint8_t Address = SEL_REGISTER + EEPROM;
+	uint32_t ReadValue;
+	uint32_t WriteValue;
+	ReadValue = ReadByteACS37800(Converter_Index, Address, &HAL_Status);
+	if (HAL_Status != HAL_OK) {
+		Error_Handler();
+	}
+	WriteValue = (ReadValue & SEL_MASK) + (1 << IAVGSELEN);
+	HAL_Status = WriteByteACS37800(Converter_Index, Address, WriteValue);
+	if (HAL_Status != HAL_OK) {
+		Error_Handler();
+	}
+}
+
 HAL_StatusTypeDef WriteByteACS37800(uint8_t Converter_Index, uint8_t Register_Address, uint32_t WriteData)
 {
 	uint8_t address_type = Converter_Index % 2;
@@ -134,7 +168,7 @@ HAL_StatusTypeDef WriteByteACS37800(uint8_t Converter_Index, uint8_t Register_Ad
 	return HAL_Status;
 }
 
-uint8_t ReadByteACS37800(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling)
+uint32_t ReadByteACS37800(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling)
 {
 	uint32_t ReturnValue = 0;
 	uint8_t ReadValue[4];

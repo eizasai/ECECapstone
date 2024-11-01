@@ -119,7 +119,7 @@ void Update_Panel_State_po(uint8_t Converter_Index, SolarPanel *SolarPanels)
 	Update_Panel_Parameters_po(Converter_Index, Voltage, Current, At_mpp, Partially_shaded, SolarPanels);
 }
 
-void Update_All_Panel_States_PO(SolarPanel *SolarPanels)
+void Update_All_Panel_States_po(SolarPanel *SolarPanels)
 {
 	for (int i = 0; i < Converter_Number_PO; i++) {
 		Update_Panel_State_po(i, SolarPanels);

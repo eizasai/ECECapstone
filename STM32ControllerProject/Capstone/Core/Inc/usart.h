@@ -42,7 +42,17 @@ extern UART_HandleTypeDef huart2;
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+/**
+ * @brief Prints fixed output data length of 12 bytes to USART connection
+ * @retval None.
+ * @param OutputBuffer: Buffer containing data
+ */
 void PrintOutputData(uint8_t *OutputBuffer);
+/**
+ * @brief Prints variable length output data to USART connection
+ * @retval None.
+ * @param OutputBuffer: Buffer containing data
+ */
 void PrintOutputBuffer(uint8_t *OutputBuffer);
 /* USER CODE END Prototypes */
 

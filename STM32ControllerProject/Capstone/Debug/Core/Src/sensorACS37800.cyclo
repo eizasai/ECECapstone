@@ -6,5 +6,7 @@
 ../Core/Src/sensorACS37800.c:88:10:Calculate_Current_RMSACS37800	3
 ../Core/Src/sensorACS37800.c:96:6:Get_Sensor_Values_for_Panel_hc_test	1
 ../Core/Src/sensorACS37800.c:102:6:Read_Sensor_ValuesACS37800	1
-../Core/Src/sensorACS37800.c:115:19:WriteByteACS37800	4
-../Core/Src/sensorACS37800.c:137:9:ReadByteACS37800	2
+../Core/Src/sensorACS37800.c:115:6:Voltage_Average_Select_EnableACS37800	3
+../Core/Src/sensorACS37800.c:132:6:Current_Average_Select_EnableACS37800	3
+../Core/Src/sensorACS37800.c:149:19:WriteByteACS37800	4
+../Core/Src/sensorACS37800.c:171:10:ReadByteACS37800	2

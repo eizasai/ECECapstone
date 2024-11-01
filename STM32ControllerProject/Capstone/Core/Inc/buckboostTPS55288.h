@@ -55,7 +55,7 @@
 #define STATUS_STATUS		0 // 00 boost, 01 buck, 10 buck-boost
 
 /**
- * @brief Determines the bust to use depending on the arbitrary converter index
+ * @brief Determines the bus to use depending on the arbitrary converter index
  * @retval I2C Line address.
  * @param Converter_Index: The arbitrary index of the converter in the system
  */

@@ -6,4 +6,4 @@
 ../Core/Src/perturb_and_observe.c:60:6:Update_Panel_Parameters_po	1
 ../Core/Src/perturb_and_observe.c:70:9:Check_if_All_are_MPPT_po	3
 ../Core/Src/perturb_and_observe.c:80:6:Update_Panel_State_po	11
-../Core/Src/perturb_and_observe.c:122:6:Update_All_Panel_States_PO	2
+../Core/Src/perturb_and_observe.c:122:6:Update_All_Panel_States_po	2
