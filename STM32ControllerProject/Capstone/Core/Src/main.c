@@ -21,14 +21,14 @@
 #include "i2c.h"
 #include "usart.h"
 #include "gpio.h"
-#include "buckboostTPS55288.h"
-#include "sensorACS37800.h"
-#include "perturb_and_observe.h"
-#include "hillclimbing.h"
-#include "sweeppanels.h"
-#include "test_hillclimbing.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "hillclimbing.h"
+#include "test_hillclimbing.h"
+#include "perturb_and_observe.h"
+#include "sweeppanels.h"
+#include "sensorACS37800.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,8 +42,8 @@
 #define DATALENGTH					12
 #define DEBUG_CONFIGURATION_MODE 	0
 #define TESTING_MODE				0
-#define TESTING_HC					1
-#define TESTING_I2C_COMMUNICATION	1
+#define TESTING_HC					0
+#define TESTING_I2C_COMMUNICATION	0
 #define NUMBER_OF_CONVERTERS 		1
 #define PERTURB_AND_OBSERVE 		1
 #define HILL_CLIMBING 				2
@@ -117,6 +117,7 @@ int main(void)
 	  Configure_Slave_AddressACS37800(Single_Converter_Index);
 	  sprintf((char *)OutputBuffer, "Slave Addresses Configured\r\n");
 	  PrintOutputBuffer(OutputBuffer);
+	  while (1);
   }
   else if (TESTING_MODE) {
 	  if (TESTING_HC) {
@@ -185,30 +186,52 @@ int main(void)
 	  PrintOutputBuffer(OutputBuffer);
 	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
   }
+
+  HAL_GPIO_WritePin(VCC_GPIO_Port, VCC_Pin, GPIO_PIN_SET);
+  HAL_StatusTypeDef HAL_Status = HAL_ERROR;
+  uint8_t Index_of_Test = 1;
+
+  TestAddressesACS37800(Index_of_Test, I2C_ADDR_REGISTER + EEPROM, &HAL_Status);
+
+  if (HAL_Status == HAL_OK) {
+	sprintf((char *)OutputBuffer, "ACS Working\r\n");
+  }
+  else {
+	sprintf((char *)OutputBuffer, "HAL Error\r\n");
+  }
+  PrintOutputBuffer(OutputBuffer);
+  TestAddressesTPS55288(Index_of_Test, MODE, &HAL_Status);
+  if (HAL_Status == HAL_OK) {
+	  sprintf((char *)OutputBuffer, "TPS Working\r\n");
+  }
+  else {
+	  sprintf((char *)OutputBuffer, "HAL Error\r\n");
+  }
+  PrintOutputBuffer(OutputBuffer);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (Interrupt_Occurred) {
-	  	  Interrupt_Occurred = 0;
-	  	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
-	  	  if (Current_Mode == SWEEP_PANELS) {
-	  		  Increase_Converter_Reference_Voltage(8);
-	  	  }
-	  }
-	  switch (Current_Mode) {
-		  case PERTURB_AND_OBSERVE:
-			  Update_All_Panel_States_po(SolarPanelsMain);
-			  break;
-		  case HILL_CLIMBING:
-			  Update_All_Panel_States_hc(SolarPanelsMain);
-			  break;
-		  case SMART_ALGORITHM:
-
-			  break;
-	  }
+//	  if (Interrupt_Occurred) {
+//	  	  Interrupt_Occurred = 0;
+//	  	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
+//	  	  if (Current_Mode == SWEEP_PANELS) {
+//	  		  Increase_Converter_Reference_Voltage(8);
+//	  	  }
+//	  }
+//	  switch (Current_Mode) {
+//		  case PERTURB_AND_OBSERVE:
+//			  Update_All_Panel_States_po(SolarPanelsMain);
+//			  break;
+//		  case HILL_CLIMBING:
+//			  Update_All_Panel_States_hc(SolarPanelsMain);
+//			  break;
+//		  case SMART_ALGORITHM:
+//
+//			  break;
+//	  }
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
@@ -259,6 +282,16 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	Enable_Output_TPS55288(1);
+	ReadBytesACS37800(1, RMSAVGONESEC_REGISTER, &HAL_Status);
+	ReadBytesACS37800(1, RMS_REGISTER, &HAL_Status);
+	ReadBytesACS37800(1, CODES_REGISTER, &HAL_Status);
+//	for (int i = 0; i < 0xf; i++)
+//	Update_Reference_Voltage_TPS55288(1, 1, 8);
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if (TESTING_MODE) return;

@@ -13,6 +13,7 @@
 
 #define MASKSTART 			0xff
 #define REF1MASK			0x03
+#define IOUT_LIMIT_MASK		0x7f
 // Register Addresses
 #define REF0 				0x0 // Uses bits 7-0
 
@@ -108,5 +109,7 @@ HAL_StatusTypeDef WriteByteTPS55288(uint8_t Converter_Index, uint8_t Register_Ad
  * @param Error_Handling: A variable to store and check the HAL status after reading the byte
  */
 uint8_t ReadByteTPS55288(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling);
+
+void TestAddressesTPS55288(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling);
 
 #endif /* INC_BUCKBOOSTTPS55288_H_ */
