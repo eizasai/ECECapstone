@@ -76,6 +76,13 @@ uint8_t Interrupt_Occurred = 0;
 HAL_StatusTypeDef HAL_Status;
 uint8_t Current_Mode = PERTURB_AND_OBSERVE;
 SolarPanel SolarPanelsMain[NUMBER_OF_CONVERTERS];
+uint8_t Test_Index = 1;
+
+uint32_t Avg_Voltage = 0;
+uint32_t Avg_Current = 0;
+uint32_t Number_of_samples_for_avg = 50;
+uint16_t Voltage;
+uint16_t Current;
 /* USER CODE END 0 */
 
 /**
@@ -189,9 +196,10 @@ int main(void)
 
   HAL_GPIO_WritePin(VCC_GPIO_Port, VCC_Pin, GPIO_PIN_SET);
   HAL_StatusTypeDef HAL_Status = HAL_ERROR;
-  uint8_t Index_of_Test = 1;
+  uint8_t Index_of_Test = Test_Index;
 
   TestAddressesACS37800(Index_of_Test, I2C_ADDR_REGISTER + EEPROM, &HAL_Status);
+//  Current_Average_Select_EnableACS37800(1);
 
   if (HAL_Status == HAL_OK) {
 	sprintf((char *)OutputBuffer, "ACS Working\r\n");
@@ -208,12 +216,30 @@ int main(void)
 	  sprintf((char *)OutputBuffer, "HAL Error\r\n");
   }
   PrintOutputBuffer(OutputBuffer);
+
+  uint32_t ReadValue;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  for (int i = 0; i < Number_of_samples_for_avg; i++) {
+//		  Read_Sensor_ValuesACS37800(Test_Index, &Voltage, &Current);
+//		  Avg_Voltage = Avg_Voltage + (uint32_t) Voltage;
+//		  Avg_Current = Avg_Current + (uint32_t) Current;
+		  ReadValue = ReadBytesACS37800(Test_Index, CODES_REGISTER, &HAL_Status);
+		  Voltage = ReadValue & 0xff;
+		  Current = (ReadValue >> 16) & 0xff;
+		  Avg_Voltage = Avg_Voltage + (uint32_t) Voltage;
+		  Avg_Current = Avg_Current + (uint32_t) Current;
+		  HAL_Delay(19);
+	  }
+	  sprintf((char *)OutputBuffer, "Voltage: %ld Current: %ld\r\n", Avg_Voltage / Number_of_samples_for_avg, Avg_Current / Number_of_samples_for_avg);
+	  PrintOutputBuffer(OutputBuffer);
+	  Avg_Voltage = 0;
+	  Avg_Current = 0;
+
 //	  if (Interrupt_Occurred) {
 //	  	  Interrupt_Occurred = 0;
 //	  	  HAL_Status = HAL_UART_Receive_IT(&huart2, &ReceiveCharacter, 1);
@@ -232,7 +258,7 @@ int main(void)
 //
 //			  break;
 //	  }
-	  HAL_Delay(500);
+//	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -284,12 +310,26 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	Enable_Output_TPS55288(1);
-	ReadBytesACS37800(1, RMSAVGONESEC_REGISTER, &HAL_Status);
-	ReadBytesACS37800(1, RMS_REGISTER, &HAL_Status);
-	ReadBytesACS37800(1, CODES_REGISTER, &HAL_Status);
-//	for (int i = 0; i < 0xf; i++)
-//	Update_Reference_Voltage_TPS55288(1, 1, 8);
+//	Update_Reference_Voltage_TPS55288(Test_Index, 1, 8);
+	ReadBytesACS37800(Test_Index, RMSAVGONESEC_REGISTER, &HAL_Status);
+	ReadBytesACS37800(Test_Index, RMS_REGISTER, &HAL_Status);
+	ReadBytesACS37800(Test_Index, CODES_REGISTER, &HAL_Status);
+
+//	WriteBytesACS37800(Test_Index, SEL_REGISTER, 0x00400000);
+//	WriteBytesACS37800(Test_Index, SEL_REGISTER, 0);
+//	ReadBytesACS37800(Test_Index, SEL_REGISTER, &HAL_Status);
+//	uint8_t ReadValue = ReadByteTPS55288(0, IOUT_LIMIT, &HAL_Status) & IOUT_LIMIT_MASK;
+//	WriteByteTPS55288(0, IOUT_LIMIT, ReadValue);
+//	Enable_Output_TPS55288(0);
+//	ReadByteTPS55288(0, STATUS, &HAL_Status);
+
+//	uint8_t BytesToSend[20];
+//	BytesToSend[0] = 0x0b;
+//	uint8_t BytesToSend2[9] = {0x0b, 0x00, 0x00, 0x40, 0x00, 0x7e, 0x00, 0x00, 0x00};
+//	WriteBytesACS37800(0, 0x1c, 126);
+//	HAL_I2C_Master_Transmit(&hi2c1, 0x61 << 1, BytesToSend2, 9, HAL_MAX_DELAY);
+//	HAL_I2C_Master_Transmit(&hi2c1, 0x61 << 1, BytesToSend, 1, HAL_MAX_DELAY);
+//	HAL_I2C_Master_Receive(&hi2c1, 0x61 << 1, BytesToSend, 20, HAL_MAX_DELAY);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)

@@ -27,7 +27,11 @@ void Initialize_HillClimbing(uint32_t Number_of_Converters, SolarPanel *SolarPan
 
 void Get_Sensor_Values_for_Panel_hc(uint8_t Converter_Index, float *Voltage, float *Current)
 {
-	Read_Sensor_ValuesACS37800(Converter_Index, Voltage, Current);
+	uint16_t Voltage_Measurement;
+	uint16_t Current_Measurement;
+	Read_Sensor_ValuesACS37800(Converter_Index, &Voltage_Measurement, &Current_Measurement);
+	*Voltage = (float) Voltage_Measurement / 5;
+	*Current = (float) Current_Measurement / 5;
 }
 
 float Calculate_Power_hc(float Voltage, float Current)

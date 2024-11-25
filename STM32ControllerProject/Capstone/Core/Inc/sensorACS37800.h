@@ -19,11 +19,13 @@
 
 #define SEL_REGISTER			0x0b
 #define IAVGSELEN				22
-#define SEL_MASK				0xffbfffff
+//#define SEL_MASK				0xffbfffff
+#define SEL_MASK				0
 
 #define NUM_AVG_REGISTER		0x0c
 #define RMS_AVG_1				0x0
-#define NUM_AVG_MASK			0xfffffff8
+//#define NUM_AVG_MASK			0xfffffff8
+#define NUM_AVG_MASK			0
 
 #define I2C_ADDR_REGISTER 		0x0f
 #define I2C_SLV_ADDR 			2
@@ -31,7 +33,7 @@
 #define N						14
 #define BYPASS_N_EN				24
 #define N_MASK					0x003fff
-#define I2C_ADDR_MASK			0xfffffe03
+#define I2C_ADDR_MASK			0x00000003
 #define I2C_DIS_MASK			0xfffffdff
 
 #define RMS_REGISTER			0x20
@@ -49,7 +51,7 @@
 
 #define CUSTOMER_ACCESS_REGISTER 0x30
 
-#define NUMBER_OF_SAMPLES_FOR_RMS 127
+#define NUMBER_OF_SAMPLES_FOR_RMS 126
 
 /**
  * @brief Determines the bus to use depending on the arbitrary converter index
@@ -129,7 +131,7 @@ void Current_Average_Select_EnableACS37800(uint8_t Converter_Index);
  * @param Voltage: Pointer to store value from register
  * @param Current: Pointer to store value from register
  */
-void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, float *Voltage, float *Current);
+void Read_Sensor_ValuesACS37800(uint8_t Converter_Index, uint16_t *Voltage, uint16_t *Current);
 
 /**
  * @brief Write a byte of data to the specified device address on the specified I2C line
@@ -150,5 +152,7 @@ HAL_StatusTypeDef WriteBytesACS37800(uint8_t Converter_Index, uint8_t Register_A
 uint32_t ReadBytesACS37800(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling);
 
 void TestAddressesACS37800(uint8_t Converter_Index, uint8_t Register_Address, HAL_StatusTypeDef *Error_Handling);
+
+void Current_Average_Select_EnableACS37800(uint8_t Converter_Index);
 
 #endif /* INC_SENSORACS37800_H_ */

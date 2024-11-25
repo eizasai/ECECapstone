@@ -53,7 +53,7 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index)
 			Error_Handler();
 		}
 	}
-	Enable_Output_TPS55288(Converter_Index);
+//	Enable_Output_TPS55288(Converter_Index);
 }
 
 void Enable_Output_TPS55288(uint8_t Converter_Index)
@@ -88,7 +88,7 @@ void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase
 	HAL_I2C_Master_Receive(I2C_Line_Address, Device_Address, &ReadValue[1], 1, HAL_MAX_DELAY);
 	Vref = (uint16_t) ReadValue[0] + ((uint16_t) ReadValue[1] << 8);
 	Vref = Vref + (Increase_Boolean ? Change_Amount : -Change_Amount);
-	if ((Vref >= Change_Amount) && (Vref <= (0x3FF - Change_Amount)))
+	if ((Vref >= Change_Amount) && (Vref <= (0x1FF - Change_Amount)))
 	{
 		BytesToSend[2] = Vref >> 8;
 		BytesToSend[1] = Vref;
@@ -173,7 +173,7 @@ void TestAddressesTPS55288(uint8_t Converter_Index, uint8_t Register_Address, HA
 			if ((Device_Address >> 1) != AddressesTPS55288[address_type]) {
 				Configure_Slave_AddressTPS55288(Converter_Index);
 			}
-			Enable_Output_TPS55288(Converter_Index);
+//			Enable_Output_TPS55288(Converter_Index);
 			return;
 		}
 	}

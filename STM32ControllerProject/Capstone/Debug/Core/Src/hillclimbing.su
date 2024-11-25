@@ -1,9 +1,9 @@
 ../Core/Src/hillclimbing.c:12:6:Initialize_HillClimbing	32	static
-../Core/Src/hillclimbing.c:28:6:Get_Sensor_Values_for_Panel_hc	24	static
-../Core/Src/hillclimbing.c:33:7:Calculate_Power_hc	16	static
-../Core/Src/hillclimbing.c:38:7:Calculate_Average_Current_hc	24	static
-../Core/Src/hillclimbing.c:47:6:Change_Panel_Values_hc	16	static
-../Core/Src/hillclimbing.c:52:6:Update_Panel_Parameters_hc	24	static
-../Core/Src/hillclimbing.c:62:9:Check_if_All_are_MPPT_hc	24	static
-../Core/Src/hillclimbing.c:72:6:Update_Panel_State_hc	48	static
-../Core/Src/hillclimbing.c:114:6:Update_All_Panel_States_hc	24	static
+../Core/Src/hillclimbing.c:28:6:Get_Sensor_Values_for_Panel_hc	32	static
+../Core/Src/hillclimbing.c:37:7:Calculate_Power_hc	16	static
+../Core/Src/hillclimbing.c:42:7:Calculate_Average_Current_hc	24	static
+../Core/Src/hillclimbing.c:51:6:Change_Panel_Values_hc	16	static
+../Core/Src/hillclimbing.c:56:6:Update_Panel_Parameters_hc	24	static
+../Core/Src/hillclimbing.c:66:9:Check_if_All_are_MPPT_hc	24	static
+../Core/Src/hillclimbing.c:76:6:Update_Panel_State_hc	48	static
+../Core/Src/hillclimbing.c:118:6:Update_All_Panel_States_hc	24	static
