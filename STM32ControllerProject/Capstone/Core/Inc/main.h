@@ -44,6 +44,8 @@ typedef struct SolarPanel {
 	float Current_Voltage;
 	float Previous_Current;
 	float Current_Current;
+	float Output_Voltage;
+	uint16_t Output_Voltage_Reference_Register;
 	uint8_t Shading_Conditions;
 	uint8_t At_MPP;
 } SolarPanel;
