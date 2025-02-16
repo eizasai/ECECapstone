@@ -85,11 +85,11 @@ void Update_Panel_Parameters_hc(uint8_t Converter_Index, float New_Voltage, floa
 
 /**
  * @brief Updates values for single converter
- * @retval None.
+ * @retval The desired Vout of the panel.
  * @param Converter_Index: The arbitrary index of the converter in the system
  * @param SolarPanels: array of solar panels and data collected
  */
-void Update_Panel_State_hc(uint8_t Converter_Index, SolarPanel *SolarPanels);
+float Update_Panel_State_hc(uint8_t Converter_Index, SolarPanel *SolarPanels);
 
 /**
  * @brief Updates values for all converters in the system

@@ -8,6 +8,9 @@
 #include "hillclimbing.h"
 
 uint32_t Converter_Number_HC = 0;
+//	TODO: Set V_Feedback
+float V_Feedback = 0.0564f;
+
 
 void Initialize_HillClimbing(uint32_t Number_of_Converters, SolarPanel *SolarPanels)
 {
@@ -73,8 +76,9 @@ uint8_t Check_if_All_are_MPPT_hc(SolarPanel *SolarPanels)
 	return 1;
 }
 
-void Update_Panel_State_hc(uint8_t Converter_Index, SolarPanel *SolarPanels)
+float Update_Panel_State_hc(uint8_t Converter_Index, SolarPanel *SolarPanels)
 {
+	uint16_t reference_register = Get_Reference_Voltage_TPS55288(Converter_Index);
 	float Previous_Voltage = SolarPanels[Converter_Index].Current_Voltage;
 	float Previous_Current = SolarPanels[Converter_Index].Current_Current;
 	float Voltage;
@@ -90,7 +94,8 @@ void Update_Panel_State_hc(uint8_t Converter_Index, SolarPanel *SolarPanels)
 			At_mpp = NOT_AT_MPP;
 		}
 		else {
-			Change_Panel_Values_hc(Converter_Index, INCREASE, 8);
+//			Change_Panel_Values_hc(Converter_Index, INCREASE, 8);
+			reference_register += 8;
 		}
 	}
 	else {
@@ -104,21 +109,52 @@ void Update_Panel_State_hc(uint8_t Converter_Index, SolarPanel *SolarPanels)
 			}
 		}
 		else if (((Power - Previous_Power > 0) && (Voltage - Previous_Voltage) > 0) || ((Power - Previous_Power < 0) && (Voltage - Previous_Voltage) < 0)) {
-			Change_Panel_Values_hc(Converter_Index, INCREASE, 8);
+//			Change_Panel_Values_hc(Converter_Index, INCREASE, 8);
+			reference_register += 8;
 			At_mpp = NOT_AT_MPP;
 		}
 		else if (((Power - Previous_Power > 0) && (Voltage - Previous_Voltage) < 0) || ((Power - Previous_Power < 0) && (Voltage - Previous_Voltage) > 0)) {
-			Change_Panel_Values_hc(Converter_Index, DECREASE, 8);
+//			Change_Panel_Values_hc(Converter_Index, DECREASE, 8);
+			reference_register -= 8;
 			At_mpp = NOT_AT_MPP;
 		}
 	}
+//	TODO: Cap reference register at min/max range
 	Update_Panel_Parameters_hc(Converter_Index, Voltage, Current, At_mpp, Partially_shaded, SolarPanels);
+	float Desired_Vout = ((45.f + reference_register*1.129f) / 1000.f) / (V_Feedback);
+	SolarPanels[Converter_Index].Output_Voltage = Desired_Vout;
+	SolarPanels[Converter_Index].Output_Voltage_Reference_Register = reference_register;
+	return Desired_Vout;
 }
 
 void Update_All_Panel_States_hc(SolarPanel *SolarPanels)
 {
+	float total_vout = 0;
 	for (int i = 0; i < Converter_Number_HC; i++) {
-		Update_Panel_State_hc(i, SolarPanels);
+		total_vout += Update_Panel_State_hc(i, SolarPanels);
 	}
+//	TODO: Set to appropriate value
+	float MAX_CHARGE_VOLTAGE = 32;
+	if(total_vout > MAX_CHARGE_VOLTAGE) {
+		float needed_vout_decrease = total_vout - MAX_CHARGE_VOLTAGE;
+//		Amount that vout goes down for every decrease by 1 in reference register
+		float vout_decrease_per_register_decrease = 1.129f / ( 1000.f * V_Feedback);
+		uint16_t needed_register_decrease = 1 + needed_vout_decrease / vout_decrease_per_register_decrease;
+		uint16_t base_decrease = needed_register_decrease / Converter_Number_HC;
+		uint16_t extra_decrease = needed_register_decrease % Converter_Number_HC;
+		for (int i = 0; i < Converter_Number_HC; i++) {
+//			TODO: Account for going below min
+			SolarPanels[i].Output_Voltage_Reference_Register -= base_decrease;
+			if (extra_decrease > 0) {
+				SolarPanels[i].Output_Voltage_Reference_Register -= 1;
+				--extra_decrease;
+			}
+			SolarPanels[i].Output_Voltage = ((45.f + SolarPanels[i].Output_Voltage_Reference_Register*1.129f) / 1000.f) / (V_Feedback);
+		}
+		for (int i = 0; i < Converter_Number_HC; i++) {
+			Set_Reference_Voltage_TPS55288(i, SolarPanels[i].Output_Voltage_Reference_Register);
+		}
+	}
+
 }
 

@@ -72,6 +72,24 @@ void Enable_Output_TPS55288(uint8_t Converter_Index)
 	}
 }
 
+uint16_t Get_Reference_Voltage_TPS55288(uint8_t Converter_Index)
+{
+	uint16_t Vref = 0;
+	uint8_t ReadValue[2];
+	uint8_t address_type = Converter_Index % 2;
+	I2C_HandleTypeDef *I2C_Line_Address = Determine_I2C_Bus_TPS55288(Converter_Index);
+	uint8_t Device_Address = AddressesTPS55288[address_type] << 1;
+	uint8_t BytesToSend[3];
+	BytesToSend[0] = REF0;
+	HAL_I2C_Master_Transmit(I2C_Line_Address, Device_Address, BytesToSend, 1, HAL_MAX_DELAY);
+	HAL_I2C_Master_Receive(I2C_Line_Address, Device_Address, ReadValue, 1, HAL_MAX_DELAY);
+	BytesToSend[0] = REF1;
+	HAL_I2C_Master_Transmit(I2C_Line_Address, Device_Address, BytesToSend, 1, HAL_MAX_DELAY);
+	HAL_I2C_Master_Receive(I2C_Line_Address, Device_Address, &ReadValue[1], 1, HAL_MAX_DELAY);
+	Vref = (uint16_t) ReadValue[0] + ((uint16_t) ReadValue[1] << 8);
+	return Vref;
+}
+
 void Update_Reference_Voltage_TPS55288(uint8_t Converter_Index, uint8_t Increase_Boolean, uint8_t Change_Amount)
 {
 	uint16_t Vref = 0;

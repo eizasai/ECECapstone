@@ -77,6 +77,13 @@ void Configure_Slave_AddressTPS55288(uint8_t Converter_Index);
 void Enable_Output_TPS55288(uint8_t Converter_Index);
 
 /**
+ * @brief Reads reference voltage register
+ * @retval Reference voltage register.
+ * @param Converter_Index: The arbitrary index of the converter in the system
+ */
+uint16_t Get_Reference_Voltage_TPS55288(uint8_t Converter_Index);
+
+/**
  * @brief Update Reference Voltage to change output
  * @retval None.
  * @param Converter_Index: The arbitrary index of the converter in the system
